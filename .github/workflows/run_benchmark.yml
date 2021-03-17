@@ -97,7 +97,7 @@ jobs:
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         AWS_DEFAULT_REGION: us-west-2
       run: |
-        sudo umount /mnt/openproblems-github
+        sudo umount -f /mnt/openproblems-github
         mkdir -p /mnt/openproblems-github
         sudo apt-get install -qy s3fs
         echo $AWS_ACCESS_KEY_ID:$AWS_SECRET_ACCESS_KEY > ~/.passwd-s3fs
