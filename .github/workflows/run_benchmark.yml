@@ -97,13 +97,13 @@ jobs:
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         AWS_DEFAULT_REGION: us-west-2
       run: |
+        sudo mkdir -p /openproblems-github
         sudo apt-get install -qy s3fs
         echo $AWS_ACCESS_KEY_ID:$AWS_SECRET_ACCESS_KEY > ~/.passwd-s3fs
         chmod 600 ~/.passwd-s3fs
-        sudo mkdir -p /opt/openproblems-github
-        sudo s3fs -o umask=0277,uid=$(id -u),gid=$(id -g) openproblems-github /opt/openproblems-github
-        mkdir -p /opt/openproblems-github/${{ github.ref }}
-        ls -ld /opt/openproblems-github/${{ github.ref }}
+        sudo s3fs -o umask=0277,uid=$(id -u),gid=$(id -g) openproblems-github /openproblems-github
+        mkdir -p /openproblems-github/${{ github.ref }}
+        ls -ld /openproblems-github/${{ github.ref }}
 
     - name: Install package & dependencies
       run: |
@@ -153,7 +153,7 @@ jobs:
         TOWER_ACCESS_TOKEN: ${{ secrets.TOWER_ACCESS_KEY }}
         AWS_DEFAULT_REGION: us-west-2
       run: >-
-        cd /opt/openproblems-github/${{ github.ref }} &&
+        cd /openproblems-github/${{ github.ref }} &&
         nextflow run
         $WITH_TOWER
         -ansi-log false
@@ -165,7 +165,7 @@ jobs:
 
     - name: Parse results
       run: |
-        cp -r /opt/openproblems-github/${{ github.ref }}/results .
+        cp -r /openproblems-github/${{ github.ref }}/results .
         python workflow/parse_nextflow.py
         rm -r results
 
